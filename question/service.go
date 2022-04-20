@@ -5,5 +5,5 @@ type Service interface {
 
 	GetQuestion(id string) (*Question, error)
 
-	SubmitAnswer()
+	SubmitAnswer() error
 }
