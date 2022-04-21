@@ -4,7 +4,7 @@ type (
 	Question struct {
 		ID      string `json:"id"`
 		Text    string `json:"text"`
-		Correct string `json:"correct_answer"`
+		Correct string `json:"answer"`
 	}
 	Answer struct {
 		QuestionID string `json:"question_id"`
@@ -15,3 +15,7 @@ type (
 		Score      float32 `json:"score"`
 	}
 )
+
+func NewAnswerResult(questionID string, score float32) *AnswerResult {
+	return &AnswerResult{QuestionID: questionID, Score: score}
+}

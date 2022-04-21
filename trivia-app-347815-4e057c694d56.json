@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "trivia-app-347815",
+  "private_key_id": "4e057c694d5609b3376bbf3bac70839e65c7c63c",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQC2NaZUW2nzyNey\nISmCQLo+8oP69j40/71+f1WVbiPlkHUSnARTlmG5p9wtfbxYLg1eZqsqlYEfKdYY\n2wuDpd7Z2MgjTfy3eJ0HEnZQ6M/jF2KMHYLsb7r3QSHsuaxV7f+A/07UjP8gzXyH\nUKt/saxB4TC3sZ+7t1q9up2RfUVByq8P0g/pk313OFRgX8ED87BLx7zuu6Bh7TTZ\nTt5x1961+O8OTTWop17W/XNB3nbHX+4P5/1HXXhangZ7jAxT/FjidOUy70x7GnEg\nMlBVxxq3RmVdLWjNn/Gp6Zaz3Pf4Tfyg+961PIDvEggxgX52/BPEgR3JiJkkj3PE\nYydxP0VxAgMBAAECggEAGurhZTQ9T8Vg5Vt0IrOQkBIK9f0rWBsGZx9FM8EZ+STr\nwVGzwJbGXcNINJ7kPxv2ikvyh2T0tqIwkxVw+wQltYW1SKSRwUJGja/oM1sMCF6r\nsUqpd7z9yt8gCt+sb46sSztBmFwyqH7oIaQE4eVhLuOnQHaIxBYkh+4qBD8/Bvvm\nb7PW039gTxuIdnFEao/Q1tQHrqmBkQflIoZwOkq/XIh3hi614p5X0D/eUaPgohlx\n7B0Q7JMbRdL8cyNdoandWWL9he0o7iKHOTPw1xASt9qPKM6CYPvqzBT0NkfncZ7T\nOYwdDpmdD+IsyyckDdzpmcUcc0Ne8oTEsXmrh01XrQKBgQDxoxeiVI5bh7AYGrsY\nQ+gkP6/jdBLlDGbAwXzibPuHifBHWkXr4aIdOr2TrydF2CLqwkrIi3N8qYXAIMLc\ncDcW8TGds4/k+4gxHg8kViF0P28qIaS4+FGQY68Mc4JY8iDgSDiFGn0V2zgq1A6n\ntneL6I3BBsIPRzruovpbClcP0wKBgQDBCkUDRwd7b9upYUyw+CF05wr+gXVd+MXm\ng07v3Ohsu3MQXCyNNndk0KgXcttfs6U6XdT8/Jt2zmlvU8QdyQHYFKsJ/MtO1ojq\nWmMARdEgUoYtpkLyQCh+qPE1mKzTtWhBk13cCA7HYZwhvlUzdybPF8B3CvdYKnWa\nEyFKhVzPKwKBgHDoc1+vwQE16uuoeeoBuRRPCgHvN/D9FXpWLuOiZvnTU4oTvX5V\n5SlhTDoY6vHw54fol4cT2jfTAqNe646ThLpco4F76O3nNqE02YByGpm2FlyKcezY\nY0xjt+TKiIrFQOVr+bUARpiS4bDpe5uUYFHorWwXm1AGSZw+XVty/nFvAoGAXyGZ\nexEA/fLVFLbvnXLawgquX1gbJ/FWTdA+EXUTUapa/R//kKPb2OH/RHcE5zfX4Fin\ngvlWAAme6g8k4ezSLNOaqrRa2QJevOdITLUbZ0tj9pEuAsZdbnYBUQFpgneu5koi\ngjGyXs2arQJoaJF6nao93iyYUmmyRPjSejAY2bsCgYBg0GGSWCR6Tvrnl0Zmd+Or\nJ6GFwTTvpRuVkjc+9fyBX2zVPmXAUqbTpDTmA9G5em/8vIFzuKYuj6gKBaKfBX+4\nScrZqAN1artgd5RxCEdxucGFHvwb+O9oVFUYxq6HME/GNI9LgpJ4O9r/rMMBw+Rn\nYH6qI7J3Dc5QG233F2jo3Q==\n-----END PRIVATE KEY-----\n",
+  "client_email": "firestore-service-account@trivia-app-347815.iam.gserviceaccount.com",
+  "client_id": "114469764588208847229",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firestore-service-account%40trivia-app-347815.iam.gserviceaccount.com"
+}

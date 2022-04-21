@@ -3,8 +3,10 @@ package question
 import (
 	"context"
 	firebase "firebase.google.com/go"
+	"github.com/oyvinddd/trivia-api/levenshtein"
 	"google.golang.org/api/option"
 	"log"
+	"strings"
 )
 
 const credentialsFilePath string = "trivia-app-347815-4e057c694d56.json"
@@ -16,6 +18,8 @@ type (
 		GetQuestionByID(ctx context.Context, id string) (*Question, error)
 
 		SubmitAnswer(ctx context.Context, answer Answer) (*AnswerResult, error)
+
+		EvaluateAnswer(question Question, answer Answer) float32
 	}
 
 	firebaseService struct {
@@ -49,5 +53,31 @@ func (service firebaseService) GetQuestionByID(ctx context.Context, id string) (
 }
 
 func (service firebaseService) SubmitAnswer(ctx context.Context, answer Answer) (*AnswerResult, error) {
-	return nil, nil
+	question, err := service.GetQuestionByID(ctx, answer.QuestionID)
+	if err != nil {
+		return nil, err
+	}
+	score := service.EvaluateAnswer(*question, answer)
+	return NewAnswerResult(question.ID, score), nil
+}
+
+func (service firebaseService) EvaluateAnswer(question Question, answer Answer) float32 {
+	answerLower := strings.ToLower(answer.Text)
+	correctLower := strings.ToLower(question.Correct)
+	// first check if answer needs to be matched exactly
+	if needsExactMatch(correctLower) {
+		if answerLower == correctLower {
+			return 100.0
+		}
+		return 0.0
+	}
+	// if we don't require an exact match, use the Edit Distance algorithm
+	// to calculate a score for the user
+	return levenshtein.Calculate(answerLower, correctLower)
+}
+
+// answers that are only one word or are less than or equal to 6 characters in length
+// requires an exact match in order for the user to be correct
+func needsExactMatch(answer string) bool {
+	return len(answer) <= 6 || len(strings.Fields(answer)) == 1
 }
