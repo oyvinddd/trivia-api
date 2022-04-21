@@ -24,6 +24,7 @@ go.work
 
 .idea/
 
-.env
+local.env
 
+# Junk
 .DS_Store

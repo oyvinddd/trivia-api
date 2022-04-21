@@ -3,6 +3,7 @@ package tapi
 import (
 	"context"
 	"encoding/json"
+	"github.com/oyvinddd/trivia-api/config"
 	"github.com/oyvinddd/trivia-api/question"
 	"io"
 )
@@ -11,8 +12,8 @@ type TriviaAPI struct {
 	service question.Service
 }
 
-func New(ctx context.Context) *TriviaAPI {
-	return &TriviaAPI{service: question.NewService(ctx)}
+func New(ctx context.Context, cfg config.Config) *TriviaAPI {
+	return &TriviaAPI{service: question.NewService(ctx, cfg)}
 }
 
 func (tapi TriviaAPI) GetDailyQuestion(ctx context.Context) (*question.Question, error) {
@@ -24,5 +25,5 @@ func (tapi TriviaAPI) SubmitAnswer(ctx context.Context, body io.ReadCloser) (*qu
 	if err := json.NewDecoder(body).Decode(&answer); err != nil {
 		return nil, err
 	}
-	return tapi.service.SubmitAnswer(ctx, answer)
+	return tapi.service.SubmitAndEvaluateAnswer(ctx, answer)
 }

@@ -31,7 +31,7 @@ type (
 		IncorrectAnswers []string `json:"incorrect_answers"`
 	}
 
-	// OTDBResponse response body we get from Open Trivia DB
+	// OTDBResponse response body we get from the Open Trivia API
 	otdbResponse struct {
 		Code      int            `json:"response_code"`
 		Questions []otdbQuestion `json:"results"`
@@ -78,13 +78,13 @@ func (scraper *Scraper) LoadFromFile(filename string) error {
 	}
 	defer fh.Close()
 	scanner := bufio.NewScanner(fh)
-	lineNumber := 0
+	isHeader := true
 	for scanner.Scan() {
 		// ignore CSV file header
-		if lineNumber == 0 {
+		if isHeader {
+			isHeader = false
 			continue
 		}
-		lineNumber++
 		line := scanner.Text()
 		question, err := questionFromString(line, "|")
 		if err != nil {
