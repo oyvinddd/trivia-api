@@ -27,7 +27,8 @@ type (
 	}
 )
 
-func NewService(ctx context.Context) Service {
+func NewService(ctx context.Context, cfg Config) Service {
+	// TODO: initialize Firebase app from config instead
 	sa := option.WithCredentialsFile(credentialsFilePath)
 	app, err := firebase.NewApp(ctx, nil, sa)
 	if err != nil {
