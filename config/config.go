@@ -2,8 +2,8 @@ package config
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/joho/godotenv"
-	"os"
 )
 
 const (
@@ -17,9 +17,6 @@ const (
 	fbAuthURIKey     string = "FB_AUTH_URI"
 	fbAuthCertURL    string = "FB_AUTH_PROVIDER_CERT_URL"
 	fbClientCertURL  string = "FB_CLIENT_CERT_URL"
-
-	firebaseConfigKey    string = "FIREBASE_CONFIG"
-	firebaseConfigB64Key string = "FIREBASE_CONFIG_B64"
 )
 
 type (
@@ -40,22 +37,19 @@ type (
 	}
 )
 
-// New creates and initializes config from the current environment
-func New() (Config, error) {
-	// load all environment variables from current ENV
-	fbConfig := firebaseConfig{
-		AccountType:  os.Getenv(fbTypeKey),
-		ProjectID:    os.Getenv(fbProjectIDKey),
-		PrivateKeyID: os.Getenv(fbPrivateKeyID),
-		PrivateKey:   os.Getenv(fbPrivateKeyKey),
-		ClientID:     os.Getenv(fbClientIDKey),
-		ClientEmail:  os.Getenv(fbClientEmailKey),
-		//AuthURI:       os.Getenv(fbAuthURIKey),
-		//TokenURI:      os.Getenv(fbTokenURIKey),
-		//AuthCertURL:   os.Getenv(fbAuthCertURL),
-		//ClientCertURL: os.Getenv(fbClientCertURL),
+// Firebase creates and initializes a Firebase based config from the current environment
+func Firebase(accountType, projectID, privateKeyID, privateKey, clientEmail, clientID string) Config {
+	config := Config{
+		fbConfig: firebaseConfig{
+			AccountType:  accountType,
+			ProjectID:    projectID,
+			PrivateKeyID: privateKeyID,
+			PrivateKey:   privateKey,
+			ClientEmail:  clientEmail,
+			ClientID:     clientID,
+		},
 	}
-	return Config{fbConfig: fbConfig}, nil
+	return config
 }
 
 // FromEnvFile loads config with environment variables from a specific ENV file
@@ -63,7 +57,7 @@ func FromEnvFile(filePath string) (Config, error) {
 	if err := godotenv.Load(filePath); err != nil {
 		return Config{}, err
 	}
-	return New()
+	return Config{}, nil
 }
 
 func (config Config) Stringify() string {
@@ -74,4 +68,9 @@ func (config Config) Stringify() string {
 func (config Config) Bytes() []byte {
 	bytes, _ := json.Marshal(config.fbConfig)
 	return bytes
+}
+
+func (config Config) PrintFirebaseConfig() {
+	bytes, _ := json.Marshal(config.fbConfig)
+	fmt.Println(string(bytes))
 }
