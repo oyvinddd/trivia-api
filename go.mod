@@ -4,6 +4,8 @@ go 1.17
 
 require (
 	firebase.google.com/go v3.13.0+incompatible
+	github.com/google/martian v2.1.0+incompatible
+	github.com/joho/godotenv v1.4.0
 	google.golang.org/api v0.74.0
 )
 
@@ -18,7 +20,6 @@ require (
 	github.com/google/go-cmp v0.5.7 // indirect
 	github.com/googleapis/gax-go/v2 v2.2.0 // indirect
 	github.com/googleapis/go-type-adapters v1.0.0 // indirect
-	github.com/joho/godotenv v1.4.0 // indirect
 	go.opencensus.io v0.23.0 // indirect
 	golang.org/x/net v0.0.0-20220325170049-de3da57026de // indirect
 	golang.org/x/oauth2 v0.0.0-20220411215720-9780585627b5 // indirect

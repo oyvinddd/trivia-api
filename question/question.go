@@ -26,6 +26,11 @@ type (
 	}
 )
 
+// New creates a new question
+func New(id, text, answer string) *Question {
+	return &Question{ID: id, Question: text, Answer: answer}
+}
+
 // NewAnswerResult creates a new answer result
 func NewAnswerResult(questionID string, score float32) *AnswerResult {
 	return &AnswerResult{QuestionID: questionID, Score: score}

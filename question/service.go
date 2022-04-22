@@ -5,7 +5,7 @@ import (
 )
 
 type Service interface {
-	
+
 	// GetDailyQuestion gets a daily question from the service
 	GetDailyQuestion(ctx context.Context) (*Question, error)
 

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/google/martian/log"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -24,6 +25,7 @@ type (
 
 	// otdbQuestion represents the raw Open Trivia DB question
 	otdbQuestion struct {
+		ID               string   `json:"id"`
 		Category         string   `json:"category"`
 		Difficulty       string   `json:"difficulty"`
 		Question         string   `json:"question"`
@@ -44,11 +46,11 @@ func New() *Scraper {
 }
 
 // instantiates a new Open Trivia DB question
-func newQuestion(category, difficulty, text, correct string, incorrect []string) otdbQuestion {
-	return otdbQuestion{Category: category, Difficulty: difficulty, Question: text, CorrectAnswer: correct, IncorrectAnswers: incorrect}
+func newQuestion(id, category, difficulty, text, correct string, incorrect []string) otdbQuestion {
+	return otdbQuestion{ID: id, Category: category, Difficulty: difficulty, Question: text, CorrectAnswer: correct, IncorrectAnswers: incorrect}
 }
 
-// Run fetches questions from the Open Trivia API and writes them to a CSV file
+// Run fetches questions from the Open Trivia API
 func (scraper *Scraper) Run(requests int) error {
 	//endTime := time.Now().Add(time.Second * 60) // run for one minute
 	apiURL := createOpenTriviaURL(50) // 50 is the max amount the API will give us
@@ -70,7 +72,7 @@ func (scraper *Scraper) Run(requests int) error {
 
 // LoadFromFile loads questions from a given CSV file
 func (scraper *Scraper) LoadFromFile(filename string) error {
-	filePath := fmt.Sprintf("%s/%s", csvDirectory, filename)
+	filePath := fmt.Sprintf("./%s/%s", csvDirectory, filename)
 	path, err := filepath.Abs(filePath)
 	fh, err := os.Open(path)
 	if err != nil {
@@ -88,6 +90,7 @@ func (scraper *Scraper) LoadFromFile(filename string) error {
 		line := scanner.Text()
 		question, err := questionFromString(line, "|")
 		if err != nil {
+			log.Errorf("error reading question from line: %s", err.Error())
 			continue
 		}
 		scraper.AddQuestion(question)
@@ -107,8 +110,8 @@ func (scraper Scraper) WriteToFile(filename string) error {
 		return err
 	}
 	defer fh.Close()
-	for _, question := range scraper.Questions {
-		line := fmt.Sprintf("%s\n", question.ToCSVFormat("|"))
+	for index, question := range scraper.Questions {
+		line := fmt.Sprintf("%d%s%s\n", index, "|", question.ToCSVFormat("|"))
 		_, err := fh.WriteString(line)
 		if err != nil {
 			return err
@@ -118,8 +121,14 @@ func (scraper Scraper) WriteToFile(filename string) error {
 }
 
 // AddQuestion adds a question to the list of questions. dupes are ignored.
-func (scraper *Scraper) AddQuestion(question otdbQuestion) {
+func (scraper *Scraper) AddQuestion(question otdbQuestion) bool {
+	for i := 0; i < len(scraper.Questions); i++ {
+		if scraper.Questions[i].Question == question.Question {
+			return false
+		}
+	}
 	scraper.Questions = append(scraper.Questions, question)
+	return true
 }
 
 func (scraper Scraper) NoOfQuestions() int {
@@ -141,8 +150,12 @@ func (scraper Scraper) PrintQuestions() {
 // ToCSVFormat use this function when writing the question to a CSV file
 func (question otdbQuestion) ToCSVFormat(separator string) string {
 	var incorrectStr string
-	for _, incorrect := range question.IncorrectAnswers {
-		incorrectStr += fmt.Sprintf("%s%s", incorrect, separator)
+	for index, incorrect := range question.IncorrectAnswers {
+		if index == len(question.IncorrectAnswers)-1 {
+			incorrectStr += incorrect
+		} else {
+			incorrectStr += fmt.Sprintf("%s%s", incorrect, separator)
+		}
 	}
 	return fmt.Sprintf("%s%s%s%s%s%s%s%s%s",
 		question.Category,
@@ -162,14 +175,15 @@ func createOpenTriviaURL(noOfQuestions int) string {
 
 func questionFromString(line, separator string) (otdbQuestion, error) {
 	parts := strings.Split(line, separator)
-	if len(parts) != 7 {
+	if len(parts) != 8 {
 		return otdbQuestion{}, errors.New("invalid question")
 	}
-	category := parts[0]
-	difficulty := parts[1]
-	text := parts[2]
+	id := parts[0]
+	category := parts[1]
+	difficulty := parts[2]
+	text := parts[3]
 	correct := parts[4]
 	incorrect := []string{parts[5], parts[6], parts[7]}
-	question := newQuestion(category, difficulty, text, correct, incorrect)
+	question := newQuestion(id, category, difficulty, text, correct, incorrect)
 	return question, nil
 }
