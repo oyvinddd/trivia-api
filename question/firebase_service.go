@@ -3,7 +3,6 @@ package question
 import (
 	"context"
 	firebase "firebase.google.com/go"
-	"fmt"
 	"github.com/oyvinddd/trivia-api/config"
 	"github.com/oyvinddd/trivia-api/levenshtein"
 	"google.golang.org/api/option"
@@ -17,8 +16,7 @@ type firebaseService struct {
 }
 
 func NewService(ctx context.Context, cfg config.Config) Service {
-	credentials := option.WithCredentialsJSON([]byte(cfg.FirebaseConfig))
-	fmt.Println(credentials)
+	credentials := option.WithCredentialsJSON(cfg.Bytes())
 	app, err := firebase.NewApp(ctx, nil, credentials)
 	if err != nil {
 		log.Fatalln(err)

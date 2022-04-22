@@ -17,7 +17,6 @@ func TestGetQuestionByID(t *testing.T) {
 	service := NewService(ctx, cfg)
 
 	question, err := service.GetQuestionByID(ctx, "1")
-
 	if err != nil {
 		t.Error(err)
 	}
