@@ -77,7 +77,7 @@ func (importer FirebaseImporter) loadQuestionsFromFile(filePath string) ([]quest
 
 func questionFromString(line, separator string) (question.Question, error) {
 	parts := strings.Split(line, separator)
-	if len(parts) != 7 {
+	if len(parts) != 8 {
 		return question.Question{}, errors.New("error in question line")
 	}
 	return question.Question{}, nil
