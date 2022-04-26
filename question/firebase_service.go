@@ -7,8 +7,11 @@ import (
 	"github.com/oyvinddd/trivia-api/levenshtein"
 	"google.golang.org/api/option"
 	"log"
+	"math/rand"
 	"strings"
 )
+
+const noOfQuestions int = 874 // TODO: import more questions
 
 // this struct implements our main Service interface
 type firebaseService struct {
@@ -25,18 +28,30 @@ func NewService(ctx context.Context, cfg config.Config) Service {
 }
 
 func (service firebaseService) GetDailyQuestion(ctx context.Context) (*Question, error) {
-	//client, err := service.app.Firestore(ctx)
-	//defer client.Close()
-	// TODO: create logic for daily question
-	return service.GetQuestionByID(ctx, "1")
-}
-
-func (service firebaseService) GetQuestionByID(ctx context.Context, id string) (*Question, error) {
 	client, err := service.app.Firestore(ctx)
 	if err != nil {
 		return nil, err
 	}
-	snapshot, err := client.Collection("questions").Doc(id).Get(ctx)
+	defer client.Close()
+	randomQuestionID := randomNumber(1, noOfQuestions)
+	return service.GetQuestionByID(ctx, randomQuestionID)
+}
+
+func (service firebaseService) GetDailyQuestions(context.Context) ([]Question, error) {
+	log.Fatalln("GetDailyQuestions has not been implemented yet")
+	return nil, nil
+}
+
+func (service firebaseService) GetQuestionByID(ctx context.Context, id int) (*Question, error) {
+	client, err := service.app.Firestore(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer client.Close()
+	questions := client.Collection("questions")
+	iter := questions.Where("id", "==", id).Limit(1).Documents(ctx)
+	// we don't need to iterate here since we're only interested in the first object
+	snapshot, err := iter.Next()
 	if err != nil {
 		return nil, err
 	}
@@ -69,4 +84,9 @@ func (service firebaseService) EvaluateAnswer(question Question, answer Answer) 
 	// if we don't require an exact match, use the Edit Distance algorithm
 	// to calculate a score for the user
 	return levenshtein.Calculate(answerLower, correctLower)
+}
+
+// returns a random number between min and max
+func randomNumber(min, max int) int {
+	return rand.Intn((max - min) + min)
 }

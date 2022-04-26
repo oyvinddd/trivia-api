@@ -8,31 +8,33 @@ import (
 type (
 	// Question represents our domain-specific question model
 	Question struct {
-		ID       string `json:"id"`
-		Question string `json:"question"`
-		Answer   string `json:"answer"`
+		ID         int    `json:"id"`
+		Category   string `json:"category"`
+		Difficulty string `json:"difficulty"`
+		Question   string `json:"question"`
+		Answer     string `json:"answer"`
 	}
 
-	// Answer is represents a user's given answer to a question
+	// Answer represents a user's given answer to a question
 	Answer struct {
-		QuestionID string `json:"question_id"`
+		QuestionID int    `json:"question_id"`
 		Text       string `json:"text"`
 	}
 
 	// AnswerResult represents the quality (0.0 to 100.0) of a particular answer to a question
 	AnswerResult struct {
-		QuestionID string  `json:"question_id"`
+		QuestionID int     `json:"question_id"`
 		Score      float32 `json:"score"`
 	}
 )
 
 // New creates a new question
-func New(id, text, answer string) *Question {
-	return &Question{ID: id, Question: text, Answer: answer}
+func New(id int, category, difficulty, text, answer string) *Question {
+	return &Question{ID: id, Category: category, Difficulty: difficulty, Question: text, Answer: answer}
 }
 
 // NewAnswerResult creates a new answer result
-func NewAnswerResult(questionID string, score float32) *AnswerResult {
+func NewAnswerResult(questionID int, score float32) *AnswerResult {
 	return &AnswerResult{QuestionID: questionID, Score: score}
 }
 
@@ -44,5 +46,11 @@ func (question Question) NeedsExactMatch() bool {
 
 // String returns a string representation of the given question
 func (question Question) String() string {
-	return fmt.Sprintf("[%s] Question: %s, answer: %s", question.ID, question.Question, question.Answer)
+	return fmt.Sprintf("[%s][%s][%s] Question: %s, answer: %s",
+		question.ID,
+		question.Category,
+		question.Difficulty,
+		question.Question,
+		question.Answer,
+	)
 }

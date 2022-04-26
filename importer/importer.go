@@ -5,12 +5,14 @@ import (
 	"context"
 	"errors"
 	firebase "firebase.google.com/go"
+	"fmt"
 	"github.com/oyvinddd/trivia-api/config"
 	"github.com/oyvinddd/trivia-api/question"
 	"google.golang.org/api/option"
 	"log"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 )
 
@@ -40,12 +42,16 @@ func (importer FirebaseImporter) ImportAvailableQuestions() error {
 	if err != nil {
 		return err
 	}
+	counter := 0
 	for _, question := range questions {
-		_, err := client.Collection("questions").Doc(question.ID).Set(importer.ctx, question)
+		_, err := client.Collection("questions").NewDoc().Set(importer.ctx, question)
+		//_, err := client.Collection("questions").Doc(question.ID).Set(importer.ctx, question)
 		if err != nil {
-			log.Fatalf("Failed adding alovelace: %v", err)
+			log.Fatalf("Failed adding question: %v", err)
 		}
+		counter++
 	}
+	fmt.Printf("Successfully imported %d questions to Firestore\n", counter)
 	return nil
 }
 
@@ -80,5 +86,10 @@ func questionFromString(line, separator string) (question.Question, error) {
 	if len(parts) != 8 {
 		return question.Question{}, errors.New("error in question line")
 	}
-	return question.Question{}, nil
+	id, _ := strconv.Atoi(parts[0])
+	category := parts[1]
+	difficulty := parts[2]
+	text := parts[3]
+	answer := parts[4]
+	return *question.New(id, category, difficulty, text, answer), nil
 }
