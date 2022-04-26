@@ -18,14 +18,19 @@ func New(ctx context.Context, cfg config.Config) *TriviaAPI {
 	return &TriviaAPI{ctx: ctx, service: question.NewService(ctx, cfg)}
 }
 
-// GetDailyQuestion gets the daily question from the API
-func (tapi TriviaAPI) GetDailyQuestion() (*question.Question, error) {
-	return tapi.service.GetDailyQuestion(tapi.ctx)
+// GetDailyQuestions gets a list of the daily questions for the current day
+func (tapi TriviaAPI) GetDailyQuestions() ([]question.Question, error) {
+	return tapi.service.GetDailyQuestions(tapi.ctx)
 }
 
 // GetQuestionByID gets a question with a specific ID from the API
 func (tapi TriviaAPI) GetQuestionByID(id int) (*question.Question, error) {
 	return tapi.service.GetQuestionByID(tapi.ctx, id)
+}
+
+// GetRandomQuestion gets a random question from the API
+func (tapi TriviaAPI) GetRandomQuestion() (*question.Question, error) {
+	return tapi.service.GetRandomQuestion(tapi.ctx)
 }
 
 // SubmitAnswer submits an answer for a given question to the API

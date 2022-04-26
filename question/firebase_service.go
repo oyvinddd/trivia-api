@@ -3,15 +3,22 @@ package question
 import (
 	"context"
 	firebase "firebase.google.com/go"
+	"fmt"
 	"github.com/oyvinddd/trivia-api/config"
 	"github.com/oyvinddd/trivia-api/levenshtein"
+	"google.golang.org/api/iterator"
 	"google.golang.org/api/option"
 	"log"
 	"math/rand"
 	"strings"
+	"time"
 )
 
-const noOfQuestions int = 874 // TODO: import more questions
+const (
+	noOfQuestions int = 874 // TODO: import more questions
+	referenceYear int = 2022
+	daysInAYear   int = 365
+)
 
 // this struct implements our main Service interface
 type firebaseService struct {
@@ -27,19 +34,32 @@ func NewService(ctx context.Context, cfg config.Config) Service {
 	return &firebaseService{app: app}
 }
 
-func (service firebaseService) GetDailyQuestion(ctx context.Context) (*Question, error) {
+func (service firebaseService) GetDailyQuestions(ctx context.Context) ([]Question, error) {
 	client, err := service.app.Firestore(ctx)
 	if err != nil {
 		return nil, err
 	}
 	defer client.Close()
-	randomQuestionID := randomNumber(1, noOfQuestions)
-	return service.GetQuestionByID(ctx, randomQuestionID)
-}
-
-func (service firebaseService) GetDailyQuestions(context.Context) ([]Question, error) {
-	log.Fatalln("GetDailyQuestions has not been implemented yet")
-	return nil, nil
+	questionIDs := questionIDsForCurrentDay()
+	fmt.Println(questionIDs)
+	questionsRef := client.Collection("questions")
+	iter := questionsRef.Where("ID", "in", questionIDs).Documents(ctx)
+	dailyQuestions := make([]Question, 0)
+	for {
+		doc, err := iter.Next()
+		if err == iterator.Done {
+			break
+		}
+		if err != nil {
+			return nil, err
+		}
+		var question Question
+		if err := doc.DataTo(&question); err != nil {
+			return nil, err
+		}
+		dailyQuestions = append(dailyQuestions, question)
+	}
+	return dailyQuestions, nil
 }
 
 func (service firebaseService) GetQuestionByID(ctx context.Context, id int) (*Question, error) {
@@ -48,8 +68,8 @@ func (service firebaseService) GetQuestionByID(ctx context.Context, id int) (*Qu
 		return nil, err
 	}
 	defer client.Close()
-	questions := client.Collection("questions")
-	iter := questions.Where("ID", "==", id).Limit(1).Documents(ctx)
+	questionsRef := client.Collection("questions")
+	iter := questionsRef.Where("ID", "==", id).Limit(1).Documents(ctx)
 	// we don't need to iterate here since we're only interested in the first object
 	snapshot, err := iter.Next()
 	if err != nil {
@@ -60,6 +80,11 @@ func (service firebaseService) GetQuestionByID(ctx context.Context, id int) (*Qu
 		return nil, err
 	}
 	return &question, nil
+}
+
+func (service firebaseService) GetRandomQuestion(ctx context.Context) (*Question, error) {
+	randomQuestionID := randomNumber(1, noOfQuestions)
+	return service.GetQuestionByID(ctx, randomQuestionID)
 }
 
 func (service firebaseService) SubmitAndEvaluateAnswer(ctx context.Context, answer Answer) (*AnswerResult, error) {
@@ -84,6 +109,20 @@ func (service firebaseService) EvaluateAnswer(question Question, answer Answer) 
 	// if we don't require an exact match, use the Edit Distance algorithm
 	// to calculate a score for the user
 	return levenshtein.Calculate(answerLower, correctLower)
+}
+
+func questionIDsForCurrentDay() []int {
+	offset := (time.Now().Year() - referenceYear) * daysInAYear
+	dayOfYear := time.Now().YearDay()
+	id1 := dayOfYear + offset
+	if id1+4 >= noOfQuestions {
+		id1 -= offset
+	}
+	id2 := id1 + 1
+	id3 := id2 + 1
+	id4 := id3 + 1
+	id5 := id4 + 1
+	return []int{id1, id2, id3, id4, id5}
 }
 
 // returns a random number between min and max

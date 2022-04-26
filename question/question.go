@@ -46,7 +46,7 @@ func (question Question) NeedsExactMatch() bool {
 
 // String returns a string representation of the given question
 func (question Question) String() string {
-	return fmt.Sprintf("[%s][%s][%s] Question: %s, answer: %s",
+	return fmt.Sprintf("[%d][%s][%s] Question: %s, answer: %s",
 		question.ID,
 		question.Category,
 		question.Difficulty,
