@@ -49,7 +49,7 @@ func (service firebaseService) GetQuestionByID(ctx context.Context, id int) (*Qu
 	}
 	defer client.Close()
 	questions := client.Collection("questions")
-	iter := questions.Where("id", "==", id).Limit(1).Documents(ctx)
+	iter := questions.Where("ID", "==", id).Limit(1).Documents(ctx)
 	// we don't need to iterate here since we're only interested in the first object
 	snapshot, err := iter.Next()
 	if err != nil {
