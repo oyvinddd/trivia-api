@@ -14,8 +14,8 @@ type Service interface {
 	// GetRandomQuestion gets a random question from the service
 	GetRandomQuestion(ctx context.Context) (*Question, error)
 
-	// SubmitAndEvaluateAnswer submits an answer for a given question to the service
-	SubmitAndEvaluateAnswer(ctx context.Context, answer Answer) (*AnswerResult, error)
+	// SubmitAnswer submits an answer for a given question to the service
+	SubmitAnswer(ctx context.Context, answer Answer) (*AnswerResult, error)
 
 	// EvaluateAnswer evaluates the correctness of the given answer
 	EvaluateAnswer(question Question, answer Answer) float32

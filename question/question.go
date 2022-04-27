@@ -12,7 +12,7 @@ type (
 		Category   string `json:"category"`
 		Difficulty string `json:"difficulty"`
 		Question   string `json:"question"`
-		Answer     string `json:"answer"`
+		Answer     string `json:"-"`
 	}
 
 	// Answer represents a user's given answer to a question

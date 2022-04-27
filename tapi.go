@@ -39,5 +39,5 @@ func (tapi TriviaAPI) SubmitAnswer(body io.ReadCloser) (*question.AnswerResult, 
 	if err := json.NewDecoder(body).Decode(&answer); err != nil {
 		return nil, err
 	}
-	return tapi.service.SubmitAndEvaluateAnswer(tapi.ctx, answer)
+	return tapi.service.SubmitAnswer(tapi.ctx, answer)
 }

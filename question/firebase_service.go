@@ -87,7 +87,7 @@ func (service firebaseService) GetRandomQuestion(ctx context.Context) (*Question
 	return service.GetQuestionByID(ctx, randomQuestionID)
 }
 
-func (service firebaseService) SubmitAndEvaluateAnswer(ctx context.Context, answer Answer) (*AnswerResult, error) {
+func (service firebaseService) SubmitAnswer(ctx context.Context, answer Answer) (*AnswerResult, error) {
 	question, err := service.GetQuestionByID(ctx, answer.QuestionID)
 	if err != nil {
 		return nil, err
