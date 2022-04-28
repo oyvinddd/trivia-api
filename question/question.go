@@ -18,7 +18,7 @@ type (
 	// Answer represents a user's given answer to a question
 	Answer struct {
 		QuestionID int    `json:"question_id"`
-		Text       string `json:"text"`
+		Text       string `json:"answer"`
 	}
 
 	// AnswerResult represents the quality (0.0 to 100.0) of a particular answer to a question
