@@ -78,7 +78,7 @@ func Calculate(a, b string) int {
 func CalculatePercentage(a, b string) float32 {
 	// FIXME: this is currently not working. see unit test.
 	distance := Calculate(a, b)
-	return (1 - float32(distance/max(len(a), len(b)))) * 100
+	return (1 - float32(distance)/float32(max(len(a), len(b)))) * 100
 }
 
 func min(a, b uint16) uint16 {

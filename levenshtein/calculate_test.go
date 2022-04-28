@@ -1,7 +1,6 @@
 package levenshtein
 
 import (
-	"fmt"
 	"testing"
 )
 
@@ -16,5 +15,8 @@ func TestLevenshteinDistance(t *testing.T) {
 func TestCalculatePercentage(t *testing.T) {
 	s1, s2 := "abc", "ab"
 	percentage := CalculatePercentage(s1, s2)
-	fmt.Println(percentage)
+	var expected float32 = 66.666664
+	if percentage != expected {
+		t.Errorf("Percentage should be %f and not %f\n", expected, percentage)
+	}
 }
