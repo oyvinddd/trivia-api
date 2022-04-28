@@ -106,8 +106,9 @@ func (service firebaseService) EvaluateAnswer(question Question, answer Answer) 
 		return 0.0
 	}
 	// if we don't require an exact match, use the Edit Distance algorithm
-	// to calculate a score for the user
-	return levenshtein.Calculate(answerLower, correctLower)
+	// to calculate a score. We then convert it to a percentage and return
+	// the result to the user.
+	return levenshtein.CalculatePercentage(answerLower, correctLower)
 }
 
 // calculates the 5 question IDs belonging to the current day
