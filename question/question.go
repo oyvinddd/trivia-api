@@ -41,7 +41,7 @@ func NewAnswerResult(questionID int, score float32) *AnswerResult {
 // NeedsExactMatch answers that are only one word or are less than or equal to 6
 // characters in length requires an exact match in order for the user to be correct
 func (question Question) NeedsExactMatch() bool {
-	return len(question.Answer) <= 6 || len(strings.Fields(question.Answer)) == 1
+	return len(question.Answer) <= 8 || len(strings.Fields(question.Answer)) == 1
 }
 
 // String returns a string representation of the given question

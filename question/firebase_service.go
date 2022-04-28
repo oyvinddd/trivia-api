@@ -3,7 +3,6 @@ package question
 import (
 	"context"
 	firebase "firebase.google.com/go"
-	"fmt"
 	"github.com/oyvinddd/trivia-api/config"
 	"github.com/oyvinddd/trivia-api/levenshtein"
 	"google.golang.org/api/iterator"
@@ -15,10 +14,11 @@ import (
 )
 
 const (
-	noOfQuestions int = 874 // TODO: import more questions
-	referenceYear int = 2022
-	daysInAYear   int = 365
+	noOfQuestions   int = 874 // TODO: import more questions
+	questionsPerDay int = 5
 )
+
+var referenceDate = time.Date(2022, 4, 28, 0, 0, 0, 0, time.UTC)
 
 // this struct implements our main Service interface
 type firebaseService struct {
@@ -40,8 +40,7 @@ func (service firebaseService) GetDailyQuestions(ctx context.Context) ([]Questio
 		return nil, err
 	}
 	defer client.Close()
-	questionIDs := questionIDsForCurrentDay()
-	fmt.Println(questionIDs)
+	questionIDs := calculateDailyQuestionIDs()
 	questionsRef := client.Collection("questions")
 	iter := questionsRef.Where("ID", "in", questionIDs).Documents(ctx)
 	dailyQuestions := make([]Question, 0)
@@ -83,8 +82,7 @@ func (service firebaseService) GetQuestionByID(ctx context.Context, id int) (*Qu
 }
 
 func (service firebaseService) GetRandomQuestion(ctx context.Context) (*Question, error) {
-	randomQuestionID := randomNumber(1, noOfQuestions)
-	return service.GetQuestionByID(ctx, randomQuestionID)
+	return service.GetQuestionByID(ctx, randomNumber(1, noOfQuestions))
 }
 
 func (service firebaseService) SubmitAnswer(ctx context.Context, answer Answer) (*AnswerResult, error) {
@@ -97,8 +95,9 @@ func (service firebaseService) SubmitAnswer(ctx context.Context, answer Answer) 
 }
 
 func (service firebaseService) EvaluateAnswer(question Question, answer Answer) float32 {
-	answerLower := strings.ToLower(answer.Text)
-	correctLower := strings.ToLower(question.Answer)
+	// do some preliminary operations on the answers before we compare them
+	answerLower := strings.ToLower(strings.TrimSpace(answer.Text))
+	correctLower := strings.ToLower(strings.TrimSpace(question.Answer))
 	// first check if answer needs to be matched exactly
 	if question.NeedsExactMatch() {
 		if answerLower == correctLower {
@@ -111,18 +110,14 @@ func (service firebaseService) EvaluateAnswer(question Question, answer Answer) 
 	return levenshtein.Calculate(answerLower, correctLower)
 }
 
-func questionIDsForCurrentDay() []int {
-	offset := (time.Now().Year() - referenceYear) * daysInAYear
-	dayOfYear := time.Now().YearDay()
-	id1 := dayOfYear + offset
-	if id1+4 >= noOfQuestions {
-		id1 -= offset
-	}
-	id2 := id1 + 1
-	id3 := id2 + 1
-	id4 := id3 + 1
-	id5 := id4 + 1
-	return []int{id1, id2, id3, id4, id5}
+// calculates the 5 question IDs belonging to the current day
+func calculateDailyQuestionIDs() []int {
+	// the day # since we started the trivia
+	currentDay := time.Now().Sub(referenceDate).Hours() / 24
+	// skip ahead by 5 each day, since we're serving up 5 questions every day
+	// use modulus here to wrap around once the IDs start exceeding # of questions
+	id1 := (int(currentDay) * questionsPerDay) % noOfQuestions
+	return []int{id1 + 0, id1 + 1, id1 + 2, id1 + 3, id1 + 4}
 }
 
 // returns a random number between min and max
