@@ -5,6 +5,10 @@ import (
 	"strings"
 )
 
+// CorrectThreshold indicates the score (in percent) a user
+// needs in order for the question to be classified as correct
+const CorrectThreshold float32 = 70.0
+
 type (
 	// Question represents our domain-specific question model
 	Question struct {
@@ -24,6 +28,7 @@ type (
 	// AnswerResult represents the quality (0.0 to 100.0) of a particular answer to a question
 	AnswerResult struct {
 		QuestionID int     `json:"question_id"`
+		Correct    bool    `json:"correct"`
 		Score      float32 `json:"score"`
 	}
 )
@@ -35,7 +40,7 @@ func New(id int, category, difficulty, text, answer string) *Question {
 
 // NewAnswerResult creates a new answer result
 func NewAnswerResult(questionID int, score float32) *AnswerResult {
-	return &AnswerResult{QuestionID: questionID, Score: score}
+	return &AnswerResult{QuestionID: questionID, Correct: score >= CorrectThreshold, Score: score}
 }
 
 // NeedsExactMatch answers that are only one word or are less than or equal to 6
