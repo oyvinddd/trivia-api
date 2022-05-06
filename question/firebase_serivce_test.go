@@ -24,12 +24,12 @@ func createAndInitFirebaseService() Service {
 
 func TestFirebaseService_GetDailyQuestions(t *testing.T) {
 	service := createAndInitFirebaseService()
-	questions, err := service.GetDailyQuestions(context.TODO())
+	container, err := service.GetDailyQuestions(context.TODO())
 	if err != nil {
 		t.Error(err)
 	}
-	if len(questions) != 5 {
-		t.Errorf("# of questions on list is not correct: %d\n", len(questions))
+	if len(container.Questions) != 5 {
+		t.Errorf("# of questions on list is not correct: %d\n", len(container.Questions))
 	}
 }
 

@@ -34,7 +34,7 @@ func NewService(ctx context.Context, cfg config.Config) Service {
 	return &firebaseService{app: app}
 }
 
-func (service firebaseService) GetDailyQuestions(ctx context.Context) ([]Question, error) {
+func (service firebaseService) GetDailyQuestions(ctx context.Context) (*Container, error) {
 	client, err := service.app.Firestore(ctx)
 	if err != nil {
 		return nil, err
@@ -58,7 +58,8 @@ func (service firebaseService) GetDailyQuestions(ctx context.Context) ([]Questio
 		}
 		dailyQuestions = append(dailyQuestions, question)
 	}
-	return dailyQuestions, nil
+	container := NewContainer(time.Now(), dailyQuestions)
+	return container, nil
 }
 
 func (service firebaseService) GetQuestionByID(ctx context.Context, id int) (*Question, error) {

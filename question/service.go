@@ -6,7 +6,7 @@ import (
 
 type Service interface {
 	// GetDailyQuestions gets a set of daily questions from the service
-	GetDailyQuestions(ctx context.Context) ([]Question, error)
+	GetDailyQuestions(ctx context.Context) (*Container, error)
 
 	// GetQuestionByID gets a question by a given ID from the service
 	GetQuestionByID(ctx context.Context, id int) (*Question, error)

@@ -19,7 +19,7 @@ func New(ctx context.Context, cfg config.Config) *TriviaAPI {
 }
 
 // GetDailyQuestions gets a list of the daily questions for the current day
-func (tapi TriviaAPI) GetDailyQuestions() ([]question.Question, error) {
+func (tapi TriviaAPI) GetDailyQuestions() (*question.Container, error) {
 	return tapi.service.GetDailyQuestions(tapi.ctx)
 }
 

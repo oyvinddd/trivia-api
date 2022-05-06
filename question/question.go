@@ -3,6 +3,7 @@ package question
 import (
 	"fmt"
 	"strings"
+	"time"
 )
 
 // CorrectThreshold indicates the score (in percent) a user
@@ -10,6 +11,12 @@ import (
 const CorrectThreshold float32 = 70.0
 
 type (
+	// Container contains the daily questions and a timestamp
+	Container struct {
+		Date      time.Time  `json:"date"`
+		Questions []Question `json:"questions"`
+	}
+
 	// Question represents our domain-specific question model
 	Question struct {
 		ID         int    `json:"id"`
@@ -36,6 +43,11 @@ type (
 // New creates a new question
 func New(id int, category, difficulty, text, answer string) *Question {
 	return &Question{ID: id, Category: category, Difficulty: difficulty, Question: text, Answer: answer}
+}
+
+// NewContainer creates a new container with daily questions
+func NewContainer(date time.Time, questions []Question) *Container {
+	return &Container{Date: date, Questions: questions}
 }
 
 // NewAnswerResult creates a new answer result
